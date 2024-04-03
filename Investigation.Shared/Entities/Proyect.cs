@@ -22,25 +22,25 @@ namespace Investigation.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
         public string Descripcion { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
         public DateTime FechaInicio { get; set; }
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
         public DateTime FechaFinal {  get; set; }
 
 
         [JsonIgnore]
 
-        public ICollection<Publication> Publications { get; set; }
+        public ICollection<Publication> Publications { get; set; } = new List<Publication>();
 
         [JsonIgnore]
 
-        public ICollection<Activity> Activities { get; set; }
+        public ICollection<Activity> Activities { get; set; } = new List<Activity>();
 
         [JsonIgnore]
 
-        public ICollection<Resource> Resources { get; set; }
+        public ICollection<Resource> Resources { get; set; } = new List<Resource>();
 
 
     }
