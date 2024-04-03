@@ -15,19 +15,8 @@ namespace Investigation.Shared.Entities
         public int ResourceId { get; set; }
         public Resource Resources { get; set; }
 
-        // Specify ON DELETE NO ACTION for the foreign key
-        [ForeignKey("ResourceId")]
-        public virtual Resource Resource { get; set; }
-
         // Se crea la foreign key de Activity
         public int ActivityId { get; set; }
         public Activity Activities { get; set; }
-
-        // Specify ON DELETE NO ACTION for the foreign key
-        [ForeignKey("ActivityId")]
-        public virtual Activity Activity { get; set; }
-
-
-
     }
 }

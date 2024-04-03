@@ -28,6 +28,18 @@ namespace Investigation.API.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ActivityResource>()
+                .HasOne(ar => ar.Resources)
+                .WithMany()
+                .HasForeignKey(ar => ar.ResourceId)
+                .OnDelete(DeleteBehavior.Cascade); // Esto especifica eliminación en cascada
+
+            modelBuilder.Entity<ActivityResource>()
+                .HasOne(ar => ar.Activities)
+                .WithMany()
+                .HasForeignKey(ar => ar.ActivityId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
 
     }
