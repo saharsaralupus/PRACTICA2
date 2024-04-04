@@ -4,18 +4,20 @@ using Microsoft.EntityFrameworkCore;
 using Investigation.Shared.Entities;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Resources;
+
 
 namespace Investigation.API.Controllers
 {
 
     [ApiController]
-    [Route("/api/Activities")]
-    public class ActivityController : ControllerBase
+    [Route("/api/Resources")]
+    public class ResourceController : ControllerBase
     {
 
         private readonly DataContext _context;
 
-        public ActivityController(DataContext context)
+        public ResourceController(DataContext context)
         {
             _context = context;
         }
@@ -25,28 +27,28 @@ namespace Investigation.API.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var activities = await _context.Activities
+            var resources = await _context.Resources
                 .Include(x => x.Proyects)
                 .ToListAsync();
 
-            var atributosActivities = activities.Select(activity => new
+            var atributosResource = resources.Select(resource => new
             {
-                activity.Id,
-                activity.Nombre,
-                activity.Descripcion,
-                activity.FechaInicio,
-                activity.FechaFinal,
-                ProjectId = activity.Proyects != null ? (int?)activity.Proyects.Id : null
+                resource.Id,
+                resource.Nombre,
+                resource.Proveedor,
+                resource.CantidadRequerida,
+                resource.FechaEntregaEstimada,
+                ProjectId = resource.Proyects != null ? (int?)resource.Proyects.Id : null
             });
 
-            return Ok(atributosActivities);
+            return Ok(atributosResource);
         }
 
 
         //Método POST- insertar en base de datos
         [HttpPost]
 
-        public async Task<ActionResult> Post(int ProjectID, Activity activity)
+        public async Task<ActionResult> Post(int ProjectID, Resource resource)
         {
             var project = await _context.Proyects.FindAsync(ProjectID);
             if (project == null)
@@ -54,10 +56,10 @@ namespace Investigation.API.Controllers
                 return NotFound("Proyecto no encontrado");
             }
 
-            activity.Proyects = project;
-            _context.Add(activity);
+            resource.Proyects = project;
+            _context.Add(resource);
             await _context.SaveChangesAsync();
-            return Ok(activity);
+            return Ok(resource);
         }
 
         //GEt por párametro- select * from activity where id=1
@@ -67,15 +69,15 @@ namespace Investigation.API.Controllers
         public async Task<ActionResult> Get(int id)
         {
 
-            var activity = await _context.Activities.FirstOrDefaultAsync(x => x.Id == id);
-            if (activity == null)
+            var resource = await _context.Activities.FirstOrDefaultAsync(x => x.Id == id);
+            if (resource == null)
             {
 
 
                 return NotFound();  //404
             }
 
-            return Ok(activity);//200
+            return Ok(resource);//200
 
 
         }
@@ -85,12 +87,12 @@ namespace Investigation.API.Controllers
         //Método PUT- actualizar datos 
         [HttpPut]
 
-        public async Task<ActionResult> Put(Activity activity)
+        public async Task<ActionResult> Put(Resource resource)
         {
 
-            _context.Update(activity);
+            _context.Update(resource);
             await _context.SaveChangesAsync();
-            return Ok(activity);
+            return Ok(resource);
         }
 
         //Delete - Eliminar registros
@@ -100,7 +102,7 @@ namespace Investigation.API.Controllers
         public async Task<ActionResult> Delete(int id)
         {
 
-            var filasafectadas = await _context.Proyects
+            var filasafectadas = await _context.Resources
                 .Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
 
@@ -114,7 +116,7 @@ namespace Investigation.API.Controllers
             return NoContent();//204
 
 
-        }
+        }
 
     }
 

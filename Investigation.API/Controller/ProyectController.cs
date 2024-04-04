@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Investigation.Shared.Entities;
+using System.Threading.Tasks;
+using System.Linq;
 
 
 namespace Investigation.API.Controllers

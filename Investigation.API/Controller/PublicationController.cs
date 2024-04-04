@@ -5,48 +5,48 @@ using Investigation.Shared.Entities;
 using System.Threading.Tasks;
 using System.Linq;
 
+
 namespace Investigation.API.Controllers
 {
 
     [ApiController]
-    [Route("/api/Activities")]
-    public class ActivityController : ControllerBase
+    [Route("/api/Publications")]
+    public class PublicationController : ControllerBase
     {
 
         private readonly DataContext _context;
 
-        public ActivityController(DataContext context)
+        public PublicationController(DataContext context)
         {
             _context = context;
         }
 
 
-        //Método GET --- Select * From activity
+        //Método GET --- Select * From proyect
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var activities = await _context.Activities
+            var publications = await _context.Publications
                 .Include(x => x.Proyects)
                 .ToListAsync();
 
-            var atributosActivities = activities.Select(activity => new
+            var atributosPublication = publications.Select(publication => new
             {
-                activity.Id,
-                activity.Nombre,
-                activity.Descripcion,
-                activity.FechaInicio,
-                activity.FechaFinal,
-                ProjectId = activity.Proyects != null ? (int?)activity.Proyects.Id : null
+                publication.Id,
+                publication.Titulo,
+                publication.Autor,
+                publication.FechaPrublicacion,               
+                ProjectId = publication.Proyects != null ? (int?)publication.Proyects.Id : null
             });
 
-            return Ok(atributosActivities);
+            return Ok(atributosPublication);
         }
 
 
         //Método POST- insertar en base de datos
         [HttpPost]
 
-        public async Task<ActionResult> Post(int ProjectID, Activity activity)
+        public async Task<ActionResult> Post(int ProjectID, Publication publication)
         {
             var project = await _context.Proyects.FindAsync(ProjectID);
             if (project == null)
@@ -54,28 +54,28 @@ namespace Investigation.API.Controllers
                 return NotFound("Proyecto no encontrado");
             }
 
-            activity.Proyects = project;
-            _context.Add(activity);
+            publication.Proyects = project;
+            _context.Add(publication);
             await _context.SaveChangesAsync();
-            return Ok(activity);
+            return Ok(publication);
         }
 
-        //GEt por párametro- select * from activity where id=1
+        //GEt por párametro- select * from proyect where id=1
         //https://localhost:7000/api/proyect/id:int?id=1
         [HttpGet("id:int")]
 
         public async Task<ActionResult> Get(int id)
         {
 
-            var activity = await _context.Activities.FirstOrDefaultAsync(x => x.Id == id);
-            if (activity == null)
+            var publication = await _context.Publications.FirstOrDefaultAsync(x => x.Id == id);
+            if (publication == null)
             {
 
 
                 return NotFound();  //404
             }
 
-            return Ok(activity);//200
+            return Ok(publication);//200
 
 
         }
@@ -85,12 +85,12 @@ namespace Investigation.API.Controllers
         //Método PUT- actualizar datos 
         [HttpPut]
 
-        public async Task<ActionResult> Put(Activity activity)
+        public async Task<ActionResult> Put(Publication publication)
         {
 
-            _context.Update(activity);
+            _context.Update(publication);
             await _context.SaveChangesAsync();
-            return Ok(activity);
+            return Ok(publication);
         }
 
         //Delete - Eliminar registros
@@ -100,7 +100,7 @@ namespace Investigation.API.Controllers
         public async Task<ActionResult> Delete(int id)
         {
 
-            var filasafectadas = await _context.Proyects
+            var filasafectadas = await _context.Publications
                 .Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
 
@@ -114,7 +114,7 @@ namespace Investigation.API.Controllers
             return NoContent();//204
 
 
-        }
+        }
 
     }
 
