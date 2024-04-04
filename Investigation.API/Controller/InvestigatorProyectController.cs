@@ -21,9 +21,45 @@ namespace Investigation.API.Controllers
 
         // GET: api/ActivityResources
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<InvestigatorProyect>>> GetInvestigatorProyect()
+        public async Task<ActionResult<IEnumerable<InvestigatorProyect>>> Get()
         {
-            return await _context.InvestigatorProyects.ToListAsync();
+            // Incluye los datos del investigador y del proyecto en la consulta
+            var atributosInvestigatorProyects = await _context.InvestigatorProyects
+                .Include(x => x.Investigators)
+                .Include(x => x.Proyects)
+                .ToListAsync();
+
+            return Ok(atributosInvestigatorProyects);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Post(int projectId, int investigatorId)
+        {
+            // Verifica si el proyecto y el investigador existen
+            var project = await _context.Proyects.FindAsync(projectId);
+            var investigator = await _context.Investigators.FindAsync(investigatorId);
+
+            if (project == null)
+            {
+                return NotFound("Proyecto no encontrado");
+            }
+            if (investigator == null)
+            {
+                return NotFound("Investigador no encontrado");
+            }
+
+            // Crea una nueva instancia de InvestigatorProyect con las llaves foráneas proporcionadas
+            var idInvestigatorProyect = new InvestigatorProyect
+            {
+                ProyectId = projectId,
+                InvestigatorId = investigatorId
+            };
+
+            // Agrega la nueva instancia a la base de datos
+            _context.InvestigatorProyects.Add(idInvestigatorProyect);
+            await _context.SaveChangesAsync();
+
+            return Ok(idInvestigatorProyect);
         }
 
         // GET: api/ActivityResources/5
