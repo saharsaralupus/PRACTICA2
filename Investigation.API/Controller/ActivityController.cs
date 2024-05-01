@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Investigation.Shared.Entities;
 using System.Threading.Tasks;
 using System.Linq;
+using System;
 
 namespace Investigation.API.Controllers
 {
@@ -21,48 +22,44 @@ namespace Investigation.API.Controllers
         }
 
 
-        //Método GET --- Select * From activity
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var activities = await _context.Activities
-                .Include(x => x.Proyects)
-                .ToListAsync();
+            var activities = await _context.Activities.Include(x => x.Projects).ToListAsync();
 
-            var atributosActivities = activities.Select(activity => new
-            {
+            var modelo = activities.Select(activity => new 
+            { 
+                
                 activity.Id,
-                activity.Nombre,
                 activity.Descripcion,
                 activity.FechaInicio,
                 activity.FechaFinal,
-                ProjectId = activity.Proyects != null ? (int?)activity.Proyects.Id : null
+                ProyectId = activity.Projects != null ? (int?)activity.Projects.Id : null,
+                associatedProject = activity.Projects != null ? (string?)activity.Projects.Nombre : null,
+
+
             });
 
-            return Ok(atributosActivities);
+            return Ok(modelo);
         }
 
-
-        //Método POST- insertar en base de datos
         [HttpPost]
 
         public async Task<ActionResult> Post(int ProjectID, Activity activity)
         {
-            var project = await _context.Proyects.FindAsync(ProjectID);
+            var project = await _context.Projects.FindAsync(ProjectID);
             if (project == null)
             {
                 return NotFound("Proyecto no encontrado");
             }
 
-            activity.Proyects = project;
+            activity.Projects = project;
             _context.Add(activity);
             await _context.SaveChangesAsync();
             return Ok(activity);
         }
 
-        //GEt por párametro- select * from activity where id=1
-        //https://localhost:7000/api/proyect/id:int?id=1
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
 
         public async Task<ActionResult> Get(int id)
         {
@@ -80,9 +77,6 @@ namespace Investigation.API.Controllers
 
         }
 
-
-
-        //Método PUT- actualizar datos 
         [HttpPut]
 
         public async Task<ActionResult> Put(Activity activity)
@@ -93,9 +87,8 @@ namespace Investigation.API.Controllers
             return Ok(activity);
         }
 
-        //Delete - Eliminar registros
 
-        [HttpDelete("id:int")]
+        [HttpDelete("{id:int}")]
 
         public async Task<ActionResult> Delete(int id)
         {

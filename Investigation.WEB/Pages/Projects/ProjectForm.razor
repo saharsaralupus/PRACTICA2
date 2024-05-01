@@ -1,0 +1,109 @@
+﻿﻿@using Investigation.Shared.Entities
+@inject SweetAlertService swal
+
+
+<EditForm Model="Project" OnSubmit="OnSubmit" ReturnAction="Return">
+    <DataAnnotationsValidator />
+
+    <div class="mb-3">
+        <label>Nombre:</label>
+        <div>
+            <InputText class="form-control" @bind-Value="Project.Nombre" />
+            <ValidationMessage For="@(()=>Project.Nombre)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>Descripcion:</label>
+        <div>
+            <InputText @bind-Value="Project.Descripcion" />
+            <ValidationMessage For="@(()=>Project.Descripcion)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>FechaInicio:</label>
+        <div>
+            <InputDate @bind-Value="Project.FechaInicio" />
+            <ValidationMessage For="@(()=>Project.FechaInicio)" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label>FechaFinal:</label>
+        <div>
+            <InputDate @bind-Value="Project.FechaFinal" />
+            <ValidationMessage For="@(()=>Project.FechaFinal)" />
+        </div>
+    </div>
+
+
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <button class="btn btn-info" type="reset">Limpiar</button>
+    <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
+
+
+
+
+</EditForm>
+
+
+@code {
+
+    private EditContext editContext = null!;
+    protected override void OnInitialized()
+    {
+        editContext = new(Project);
+    }
+
+    [EditorRequired]
+    [Parameter]
+
+    public Project Project { get; set; }
+
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback OnSubmit { get; set; }
+
+
+    [EditorRequired]
+    [Parameter]
+    public EventCallback ReturnAction { get; set; }
+
+
+    public bool FormPostedSuccessfully { get; set; } = false;
+
+    private async Task OnBeforeInternalNavigation(LocationChangingContext context)
+    {
+        var formularioFueEditado = editContext.IsModified();
+
+        if (!formularioFueEditado)
+        {
+            return;
+        }
+
+        if (FormPostedSuccessfully)
+        {
+            return;
+        }
+
+        var resultado = await swal.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = "¿Deseas abandonar la página y perder los cambios?",
+                Icon = SweetAlertIcon.Warning,
+                ShowCancelButton = true
+            });
+
+        var confirmado = !string.IsNullOrEmpty(resultado.Value);
+
+        if (confirmado)
+        {
+            return;
+        }
+
+        context.PreventNavigation();
+    }
+
+}

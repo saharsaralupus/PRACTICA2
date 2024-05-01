@@ -21,8 +21,6 @@ namespace Investigation.API.Controllers
             _context = context;
         }
 
-
-        //Método GET --- Select * From activity
         [HttpGet]
         public async Task<ActionResult> Get()
         {
@@ -31,8 +29,6 @@ namespace Investigation.API.Controllers
             return Ok(await _context.Investigators.ToListAsync());
         }
 
-
-        //Método POST- insertar en base de datos
         [HttpPost]
 
         public async Task<ActionResult> Post(Investigator investigator)
@@ -43,9 +39,7 @@ namespace Investigation.API.Controllers
             return Ok(investigator);
         }
 
-        //GEt por párametro- select * from activity where id=1
-        //https://localhost:7000/api/proyect/id:int?id=1
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
 
         public async Task<ActionResult> Get(int id)
         {
@@ -63,9 +57,6 @@ namespace Investigation.API.Controllers
 
         }
 
-
-
-        //Método PUT- actualizar datos 
         [HttpPut]
 
         public async Task<ActionResult> Put(Investigator investigator)
@@ -76,9 +67,8 @@ namespace Investigation.API.Controllers
             return Ok(investigator);
         }
 
-        //Delete - Eliminar registros
 
-        [HttpDelete("id:int")]
+        [HttpDelete("{id:int}")]
 
         public async Task<ActionResult> Delete(int id)
         {

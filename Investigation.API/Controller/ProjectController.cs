@@ -10,32 +10,30 @@ namespace Investigation.API.Controllers
 {
 
     [ApiController]
-    [Route("/api/Proyects")]
-    public class ProyectController : ControllerBase
+    [Route("/api/Projects")]
+    public class ProjectController : ControllerBase
     {
 
         private readonly DataContext _context;
 
-        public ProyectController(DataContext context)
+        public ProjectController(DataContext context)
         {
             _context = context;
         }
 
 
-        //Método GET --- Select * From proyect
         [HttpGet]
         public async Task<ActionResult> Get()
         {
 
 
-            return Ok(await _context.Proyects.ToListAsync());
+            return Ok(await _context.Projects.ToListAsync());
         }
 
 
-        //Método POST- insertar en base de datos
         [HttpPost]
 
-        public async Task<ActionResult> Post(Proyect proyect)
+        public async Task<ActionResult> Post(Project proyect)
         {
 
             _context.Add(proyect);
@@ -43,14 +41,12 @@ namespace Investigation.API.Controllers
             return Ok(proyect);
         }
 
-        //GEt por párametro- select * from proyect where id=1
-        //https://localhost:7000/api/proyect/id:int?id=1
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
 
         public async Task<ActionResult> Get(int id)
         {
 
-            var proyect = await _context.Proyects.FirstOrDefaultAsync(x => x.Id == id);
+            var proyect = await _context.Projects.FirstOrDefaultAsync(x => x.Id == id);
             if (proyect == null)
             {
 
@@ -64,11 +60,9 @@ namespace Investigation.API.Controllers
         }
 
 
-
-        //Método PUT- actualizar datos 
         [HttpPut]
 
-        public async Task<ActionResult> Put(Proyect proyect)
+        public async Task<ActionResult> Put(Project proyect)
         {
 
             _context.Update(proyect);
@@ -76,14 +70,13 @@ namespace Investigation.API.Controllers
             return Ok(proyect);
         }
 
-        //Delete - Eliminar registros
 
-        [HttpDelete("id:int")]
+        [HttpDelete("{id:int}")]
 
         public async Task<ActionResult> Delete(int id)
         {
 
-            var filasafectadas = await _context.Proyects
+            var filasafectadas = await _context.Projects
                 .Where(x => x.Id == id)
                 .ExecuteDeleteAsync();
 

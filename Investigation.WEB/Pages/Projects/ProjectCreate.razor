@@ -1,0 +1,70 @@
+﻿
+@page "/Projects/create"
+
+@inject IRepository repository 
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+
+<h3>ProjectCreate</h3>
+<ProjectForm @ref="projectForm" Project="project" OnSubmit="Create" ReturnAction="Return" />
+
+
+
+@code {
+    private Project project = new();
+    private ProjectForm projectForm;
+
+
+
+    private async Task Create()
+    {
+
+
+        var responseHttp = await repository.PostAsync("/api/Projects", project);
+        if (responseHttp.Error)
+        {
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+
+
+        }
+
+        Return();
+
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+
+                Toast = true,
+                Position = SweetAlertPosition.BottomEnd,
+                ShowConfirmButton = true,
+                Timer = 3000
+
+
+
+
+        });
+
+
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Registro creado con éxito");
+    }
+
+
+    private void Return()
+    {
+
+
+
+
+        projectForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/Projects");
+
+
+
+
+    }
+
+
+}

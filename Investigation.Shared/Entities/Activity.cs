@@ -30,7 +30,7 @@ namespace Investigation.Shared.Entities
         public DateTime FechaFinal { get; set; }
 
         [JsonIgnore]
-        public Proyect Proyects { get; set; }
+        public Project Projects { get; set; }
 
 
     }

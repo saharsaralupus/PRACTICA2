@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Investigation.API.Controllers
 {
     [ApiController]
-    [Route("/api/ActivityResources")]
+    [Route("/api/ActivitiesResources")]
     public class ActivityResourceController : ControllerBase
     {
         private readonly DataContext _context;
@@ -17,9 +17,8 @@ namespace Investigation.API.Controllers
             _context = context;
         }
 
-        // GET: api/ActivityResources
         [HttpGet]
-        public async Task<ActionResult> GetActivityResources()
+        public async Task<ActionResult> Get()
         {
             var activityResources = await _context.ActivityResources
                 .Include(ar => ar.Activities)
@@ -28,7 +27,6 @@ namespace Investigation.API.Controllers
             return Ok(activityResources);
         }
 
-        // POST: api/ActivityResources
         [HttpPost]
         public async Task<ActionResult> Post(int resourceId, int activityId)
         {
@@ -46,8 +44,8 @@ namespace Investigation.API.Controllers
 
             var idActivityResource = new ActivityResource
             {
-                ResourceId = resourceId,
-                ActivityId = activityId
+                Activities = activity,
+                Resources = resource
             };
 
             _context.ActivityResources.Add(idActivityResource);
@@ -56,9 +54,8 @@ namespace Investigation.API.Controllers
             return Ok(idActivityResource);
         }
 
-        // GET: api/ActivityResources/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult> GetActivityResource(int id)
+        [HttpGet("{id:int}")]
+        public async Task<ActionResult> Get(int id)
         {
             var activityResource = await _context.ActivityResources
                 .Include(ar => ar.Activities)
@@ -73,9 +70,8 @@ namespace Investigation.API.Controllers
             return Ok(activityResource);
         }
 
-        // DELETE: api/ActivityResources/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteActivityResource(int id)
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
         {
             var activityResource = await _context.ActivityResources.FindAsync(id);
             if (activityResource == null)

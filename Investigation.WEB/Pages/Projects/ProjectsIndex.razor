@@ -1,0 +1,118 @@
+﻿@page "/Projects"
+@using Investigation.Shared.Entities
+@using Investigation.WEB.Repositories
+@using Investigation.WEB.Shared
+@inject IRepository repository
+@inject SweetAlertService sweetAlertService
+@inject NavigationManager navigationManager
+
+@inject IRepository repository
+
+<div class="card">
+    <div class="card-header">
+        <span>
+            <i class="bi bi-person" /> Projects
+            <a class="btn btn-primary btn-sm float-end" href="/Projects/create"><i class="bi bi-plus-circle" />New Project</a>
+
+        </span>
+    </div>
+
+    <div class="card-body">
+
+        <GenericList MyList="Projects">
+
+            <Body>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Projects!)
+                        {
+                            <tr>
+
+                                <td> @item.Nombre</td>
+                                <td>@item.Descripcion </td>
+                                <td>@item.FechaInicio</td>
+                                <td>@item.FechaFinal</td>
+
+                                <td>
+                                    <a href="/Projects/edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square" /> Editar</a>
+                                    <button @onclick=@(() => DeleteAsycn(item)) class="btn btn-sm btn-danger"><i class="bi bi-trash-fill" /> Borrar</button>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </Body>
+        </GenericList>
+    </div>
+</div>
+
+
+@code {
+    public List<Project> Projects { get; set; }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadAsync();
+    }
+
+    private async Task LoadAsync()
+    {
+        var responseHttp = await repository.GetAsync<List<Project>>("api/Projects");
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
+            return;
+        }
+        Projects = responseHttp.Response;
+    }
+
+
+
+    private async Task DeleteAsycn(Project project)
+    {
+        var result = await sweetAlertService.FireAsync(new SweetAlertOptions
+            {
+                Title = "Confirmación",
+                Text = $"¿Estas seguro de querer borrar el proyecto: {project.Nombre}?",
+                Icon = SweetAlertIcon.Question,
+                ShowCancelButton = true,
+            });
+        var confirm = string.IsNullOrEmpty(result.Value);
+        if (confirm)
+        {
+            return;
+        }
+
+        var responseHttp = await repository.DeleteAsync<Project>($"api/Projects/{project.Id}");
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("Projects");
+            }
+            else
+            {
+                var mensajeError = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", mensajeError, SweetAlertIcon.Error);
+            }
+            return;
+        }
+
+        await LoadAsync();
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+                Toast = true,
+                Position = SweetAlertPosition.BottomEnd,
+                ShowConfirmButton = true,
+                Timer = 3000
+            });
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Registro borrado con éxito.");
+    }
+}

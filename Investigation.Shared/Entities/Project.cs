@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Investigation.Shared.Entities
 {
-    public class Proyect
+    public class Project
     {
         public int Id { get; set; }
 
@@ -37,10 +37,6 @@ namespace Investigation.Shared.Entities
         [JsonIgnore]
 
         public ICollection<Activity> Activities { get; set; } = new List<Activity>();
-
-        [JsonIgnore]
-
-        public ICollection<Resource> Resources { get; set; } = new List<Resource>();
 
 
     }

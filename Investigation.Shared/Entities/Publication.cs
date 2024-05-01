@@ -24,10 +24,10 @@ namespace Investigation.Shared.Entities
 
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
-        public DateTime FechaPrublicacion { get; set; }
+        public DateTime FechaPublicacion { get; set; }
 
         [JsonIgnore]
-        public Proyect Proyects { get; set; }
+        public Project Projects { get; set; }
 
 
 

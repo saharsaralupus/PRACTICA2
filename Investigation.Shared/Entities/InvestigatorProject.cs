@@ -6,16 +6,12 @@ using System.Threading.Tasks;
 
 namespace Investigation.Shared.Entities
 {
-    public class InvestigatorProyect
+    public class InvestigatorProject
     {
         public int Id{ get; set; }
 
-        //Se crea la foreign key de Proyect
-        public int ProyectId { get; set; }
-        public Proyect Proyects { get; set; }
+        public Project Projects { get; set; }
 
-        //Se crea la foreign key de Investigator
-        public int InvestigatorId { get; set; }
         public Investigator Investigators { get; set; }
 
 

@@ -23,53 +23,28 @@ namespace Investigation.API.Controllers
         }
 
 
-        //Método GET --- Select * From activity
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var resources = await _context.Resources
-                .Include(x => x.Proyects)
-                .ToListAsync();
-
-            var atributosResource = resources.Select(resource => new
-            {
-                resource.Id,
-                resource.Nombre,
-                resource.Proveedor,
-                resource.CantidadRequerida,
-                resource.FechaEntregaEstimada,
-                ProjectId = resource.Proyects != null ? (int?)resource.Proyects.Id : null
-            });
-
-            return Ok(atributosResource);
+            return Ok(await _context.Resources.ToListAsync());
         }
 
 
-        //Método POST- insertar en base de datos
         [HttpPost]
 
-        public async Task<ActionResult> Post(int ProjectID, Resource resource)
+        public async Task<ActionResult> Post(Resource resource)
         {
-            var project = await _context.Proyects.FindAsync(ProjectID);
-            if (project == null)
-            {
-                return NotFound("Proyecto no encontrado");
-            }
-
-            resource.Proyects = project;
             _context.Add(resource);
             await _context.SaveChangesAsync();
             return Ok(resource);
         }
 
-        //GEt por párametro- select * from activity where id=1
-        //https://localhost:7000/api/proyect/id:int?id=1
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
 
         public async Task<ActionResult> Get(int id)
         {
 
-            var resource = await _context.Activities.FirstOrDefaultAsync(x => x.Id == id);
+            var resource = await _context.Resources.FirstOrDefaultAsync(x => x.Id == id);
             if (resource == null)
             {
 
@@ -83,8 +58,6 @@ namespace Investigation.API.Controllers
         }
 
 
-
-        //Método PUT- actualizar datos 
         [HttpPut]
 
         public async Task<ActionResult> Put(Resource resource)
@@ -95,9 +68,8 @@ namespace Investigation.API.Controllers
             return Ok(resource);
         }
 
-        //Delete - Eliminar registros
 
-        [HttpDelete("id:int")]
+        [HttpDelete("{id:int}")]
 
         public async Task<ActionResult> Delete(int id)
         {

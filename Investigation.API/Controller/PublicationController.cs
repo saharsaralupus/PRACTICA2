@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Investigation.Shared.Entities;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Diagnostics;
 
 
 namespace Investigation.API.Controllers
@@ -22,12 +23,11 @@ namespace Investigation.API.Controllers
         }
 
 
-        //Método GET --- Select * From proyect
         [HttpGet]
         public async Task<ActionResult> Get()
         {
             var publications = await _context.Publications
-                .Include(x => x.Proyects)
+                .Include(x => x.Projects)
                 .ToListAsync();
 
             var atributosPublication = publications.Select(publication => new
@@ -35,34 +35,31 @@ namespace Investigation.API.Controllers
                 publication.Id,
                 publication.Titulo,
                 publication.Autor,
-                publication.FechaPrublicacion,               
-                ProjectId = publication.Proyects != null ? (int?)publication.Proyects.Id : null
+                publication.FechaPublicacion,               
+                ProjectId = publication.Projects != null ? (int?)publication.Projects.Id : null,
+                associatedProject = publication.Projects != null ? (string?)publication.Projects.Nombre : null,
             });
-
             return Ok(atributosPublication);
         }
 
 
-        //Método POST- insertar en base de datos
         [HttpPost]
 
         public async Task<ActionResult> Post(int ProjectID, Publication publication)
         {
-            var project = await _context.Proyects.FindAsync(ProjectID);
+            var project = await _context.Projects.FindAsync(ProjectID);
             if (project == null)
             {
                 return NotFound("Proyecto no encontrado");
             }
 
-            publication.Proyects = project;
+            publication.Projects = project;
             _context.Add(publication);
             await _context.SaveChangesAsync();
             return Ok(publication);
         }
 
-        //GEt por párametro- select * from proyect where id=1
-        //https://localhost:7000/api/proyect/id:int?id=1
-        [HttpGet("id:int")]
+        [HttpGet("{id:int}")]
 
         public async Task<ActionResult> Get(int id)
         {
@@ -81,8 +78,6 @@ namespace Investigation.API.Controllers
         }
 
 
-
-        //Método PUT- actualizar datos 
         [HttpPut]
 
         public async Task<ActionResult> Put(Publication publication)
@@ -93,9 +88,7 @@ namespace Investigation.API.Controllers
             return Ok(publication);
         }
 
-        //Delete - Eliminar registros
-
-        [HttpDelete("id:int")]
+        [HttpDelete("{id:int}")]
 
         public async Task<ActionResult> Delete(int id)
         {

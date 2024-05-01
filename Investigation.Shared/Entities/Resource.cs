@@ -29,9 +29,6 @@ namespace Investigation.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
         public DateTime FechaEntregaEstimada { get; set; }
 
-        [JsonIgnore]
-        public Proyect Proyects { get; set; }
-
 
     }
 }

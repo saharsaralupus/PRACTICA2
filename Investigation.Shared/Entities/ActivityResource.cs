@@ -11,12 +11,8 @@ namespace Investigation.Shared.Entities
     {
         public int Id { get; set; }
 
-        // Se crea la foreign key de Resource
-        public int ResourceId { get; set; }
         public Resource Resources { get; set; }
 
-        // Se crea la foreign key de Activity
-        public int ActivityId { get; set; }
         public Activity Activities { get; set; }
     }
 }

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Investigation.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240404012524_Primero")]
-    partial class Primero
+    [Migration("20240430051256_InicialPro")]
+    partial class InicialPro
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,12 +49,17 @@ namespace Investigation.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("ProyectsId")
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProjectsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProyectsId");
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ProjectsId");
 
                     b.ToTable("Activities");
                 });
@@ -67,17 +72,17 @@ namespace Investigation.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("ActivityId")
+                    b.Property<int?>("ActivitiesId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ResourceId")
+                    b.Property<int?>("ResourcesId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivityId");
+                    b.HasIndex("ActivitiesId");
 
-                    b.HasIndex("ResourceId");
+                    b.HasIndex("ResourcesId");
 
                     b.ToTable("ActivityResources");
                 });
@@ -113,7 +118,7 @@ namespace Investigation.API.Migrations
                     b.ToTable("Investigators");
                 });
 
-            modelBuilder.Entity("Investigation.Shared.Entities.InvestigatorProyect", b =>
+            modelBuilder.Entity("Investigation.Shared.Entities.InvestigatorProject", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -121,22 +126,22 @@ namespace Investigation.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("InvestigatorId")
+                    b.Property<int?>("InvestigatorsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProyectId")
+                    b.Property<int?>("ProjectsId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InvestigatorId");
+                    b.HasIndex("InvestigatorsId");
 
-                    b.HasIndex("ProyectId");
+                    b.HasIndex("ProjectsId");
 
                     b.ToTable("InvestigatorProyects");
                 });
 
-            modelBuilder.Entity("Investigation.Shared.Entities.Proyect", b =>
+            modelBuilder.Entity("Investigation.Shared.Entities.Project", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -162,7 +167,7 @@ namespace Investigation.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Proyects");
+                    b.ToTable("Projects");
                 });
 
             modelBuilder.Entity("Investigation.Shared.Entities.Publication", b =>
@@ -178,10 +183,13 @@ namespace Investigation.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("FechaPrublicacion")
+                    b.Property<DateTime>("FechaPublicacion")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("ProyectsId")
+                    b.Property<int?>("ProjectId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ProjectsId")
                         .HasColumnType("int");
 
                     b.Property<string>("Titulo")
@@ -191,7 +199,9 @@ namespace Investigation.API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProyectsId");
+                    b.HasIndex("ProjectId");
+
+                    b.HasIndex("ProjectsId");
 
                     b.ToTable("Publications");
                 });
@@ -220,88 +230,78 @@ namespace Investigation.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("ProyectsId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("ProyectsId");
 
                     b.ToTable("Resources");
                 });
 
             modelBuilder.Entity("Investigation.Shared.Entities.Activity", b =>
                 {
-                    b.HasOne("Investigation.Shared.Entities.Proyect", "Proyects")
+                    b.HasOne("Investigation.Shared.Entities.Project", null)
                         .WithMany("Activities")
-                        .HasForeignKey("ProyectsId");
+                        .HasForeignKey("ProjectId");
 
-                    b.Navigation("Proyects");
+                    b.HasOne("Investigation.Shared.Entities.Project", "Projects")
+                        .WithMany()
+                        .HasForeignKey("ProjectsId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("Investigation.Shared.Entities.ActivityResource", b =>
                 {
                     b.HasOne("Investigation.Shared.Entities.Activity", "Activities")
                         .WithMany()
-                        .HasForeignKey("ActivityId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .HasForeignKey("ActivitiesId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Investigation.Shared.Entities.Resource", "Resources")
                         .WithMany()
-                        .HasForeignKey("ResourceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ResourcesId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Activities");
 
                     b.Navigation("Resources");
                 });
 
-            modelBuilder.Entity("Investigation.Shared.Entities.InvestigatorProyect", b =>
+            modelBuilder.Entity("Investigation.Shared.Entities.InvestigatorProject", b =>
                 {
                     b.HasOne("Investigation.Shared.Entities.Investigator", "Investigators")
                         .WithMany()
-                        .HasForeignKey("InvestigatorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("InvestigatorsId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Investigation.Shared.Entities.Proyect", "Proyects")
+                    b.HasOne("Investigation.Shared.Entities.Project", "Projects")
                         .WithMany()
-                        .HasForeignKey("ProyectId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProjectsId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Investigators");
 
-                    b.Navigation("Proyects");
+                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("Investigation.Shared.Entities.Publication", b =>
                 {
-                    b.HasOne("Investigation.Shared.Entities.Proyect", "Proyects")
+                    b.HasOne("Investigation.Shared.Entities.Project", null)
                         .WithMany("Publications")
-                        .HasForeignKey("ProyectsId");
+                        .HasForeignKey("ProjectId");
 
-                    b.Navigation("Proyects");
+                    b.HasOne("Investigation.Shared.Entities.Project", "Projects")
+                        .WithMany()
+                        .HasForeignKey("ProjectsId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Projects");
                 });
 
-            modelBuilder.Entity("Investigation.Shared.Entities.Resource", b =>
-                {
-                    b.HasOne("Investigation.Shared.Entities.Proyect", "Proyects")
-                        .WithMany("Resources")
-                        .HasForeignKey("ProyectsId");
-
-                    b.Navigation("Proyects");
-                });
-
-            modelBuilder.Entity("Investigation.Shared.Entities.Proyect", b =>
+            modelBuilder.Entity("Investigation.Shared.Entities.Project", b =>
                 {
                     b.Navigation("Activities");
 
                     b.Navigation("Publications");
-
-                    b.Navigation("Resources");
                 });
 #pragma warning restore 612, 618
         }
