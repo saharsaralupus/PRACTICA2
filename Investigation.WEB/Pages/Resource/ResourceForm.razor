@@ -10,32 +10,32 @@
     <div class="mb-3">
         <label>Nombre:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Nombre" />
-            <ValidationMessage For="@(()=>Project.Nombre)" />
+            <InputText class="form-control" @bind-Value="Resource.Nombre" />
+            <ValidationMessage For="@(()=>Resource.Nombre)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>Descripcion:</label>
+        <label>Proveedor:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Descripcion" />
-            <ValidationMessage For="@(()=>Project.Descripcion)" />
+            <InputText class="form-control" @bind-Value="Resource.Proveedor" />
+            <ValidationMessage For="@(()=>Resource.Proveedor)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaInicio:</label>
+        <label>Cantidad Requerida:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaInicio" />
-            <ValidationMessage For="@(()=>Project.FechaInicio)" />
+            <InputNumber @bind-Value="Resource.CantidadRequerida" />
+            <ValidationMessage For="@(()=>Resource.CantidadRequerida)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaFinal:</label>
+        <label>Fecha de Entregra Estimada:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaFinal" />
-            <ValidationMessage For="@(()=>Project.FechaFinal)" />
+            <InputDate @bind-Value="Resource.FechaEntregaEstimada" />
+            <ValidationMessage For="@(()=>Resource.FechaEntregaEstimada)" />
         </div>
     </div>
 
@@ -43,9 +43,6 @@
     <button class="btn btn-primary" type="submit">Guardar</button>
     <button class="btn btn-info" type="reset">Limpiar</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
-
-
-
 
 </EditForm>
 
@@ -55,13 +52,13 @@
     private EditContext editContext = null!;
     protected override void OnInitialized()
     {
-        editContext = new(Project);
+        editContext = new(Resource);
     }
 
     [EditorRequired]
     [Parameter]
 
-    public Project Project { get; set; }
+    public Resource Resource { get; set; }
 
 
     [EditorRequired]

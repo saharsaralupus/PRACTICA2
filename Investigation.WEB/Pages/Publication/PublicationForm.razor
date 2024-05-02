@@ -8,44 +8,40 @@
     <DataAnnotationsValidator />
 
     <div class="mb-3">
-        <label>Nombre:</label>
+        <label>Título:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Nombre" />
-            <ValidationMessage For="@(()=>Project.Nombre)" />
+            <InputText class="form-control" @bind-Value="Publication.Titulo" />
+            <ValidationMessage For="@(()=>Publication.Titulo)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>Descripcion:</label>
+        <label>Autor:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Descripcion" />
-            <ValidationMessage For="@(()=>Project.Descripcion)" />
+            <InputText class="form-control" @bind-Value="Publication.Autor" />
+            <ValidationMessage For="@(()=>Publication.Autor)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaInicio:</label>
+        <label>Project Id:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaInicio" />
-            <ValidationMessage For="@(()=>Project.FechaInicio)" />
+            <InputNumber @bind-Value="Publication.ProjectId" />
+            <ValidationMessage For="@(()=>Publication.ProjectId)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaFinal:</label>
+        <label>Fecha de Publicación:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaFinal" />
-            <ValidationMessage For="@(()=>Project.FechaFinal)" />
+            <InputDate @bind-Value="Publication.FechaPublicacion" />
+            <ValidationMessage For="@(()=>Publication.FechaPublicacion)" />
         </div>
     </div>
-
 
     <button class="btn btn-primary" type="submit">Guardar</button>
     <button class="btn btn-info" type="reset">Limpiar</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
-
-
-
 
 </EditForm>
 
@@ -55,13 +51,13 @@
     private EditContext editContext = null!;
     protected override void OnInitialized()
     {
-        editContext = new(Project);
+        editContext = new(Publication);
     }
 
     [EditorRequired]
     [Parameter]
 
-    public Project Project { get; set; }
+    public Publication Publication { get; set; }
 
 
     [EditorRequired]

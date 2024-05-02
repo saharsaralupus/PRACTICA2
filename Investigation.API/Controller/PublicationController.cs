@@ -26,38 +26,19 @@ namespace Investigation.API.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var publications = await _context.Publications
-                .Include(x => x.Projects)
-                .ToListAsync();
-
-            var atributosPublication = publications.Select(publication => new
-            {
-                publication.Id,
-                publication.Titulo,
-                publication.Autor,
-                publication.FechaPublicacion,               
-                ProjectId = publication.Projects != null ? (int?)publication.Projects.Id : null,
-                associatedProject = publication.Projects != null ? (string?)publication.Projects.Nombre : null,
-            });
-            return Ok(atributosPublication);
+            return Ok(await _context.Publications.ToListAsync());
         }
 
 
         [HttpPost]
 
-        public async Task<ActionResult> Post(int ProjectID, Publication publication)
+        public async Task<ActionResult> Post(Publication publication)
         {
-            var project = await _context.Projects.FindAsync(ProjectID);
-            if (project == null)
-            {
-                return NotFound("Proyecto no encontrado");
-            }
-
-            publication.Projects = project;
-            _context.Add(publication);
+            _context.Publications.Add(publication);
             await _context.SaveChangesAsync();
             return Ok(publication);
         }
+
 
         [HttpGet("{id:int}")]
 
@@ -79,17 +60,14 @@ namespace Investigation.API.Controllers
 
 
         [HttpPut]
-
         public async Task<ActionResult> Put(Publication publication)
         {
-
             _context.Update(publication);
             await _context.SaveChangesAsync();
             return Ok(publication);
         }
 
         [HttpDelete("{id:int}")]
-
         public async Task<ActionResult> Delete(int id)
         {
 

@@ -1,4 +1,4 @@
-﻿@page "/Projects"
+﻿@page "/Resources"
 @using Investigation.Shared.Entities
 @using Investigation.WEB.Repositories
 @using Investigation.WEB.Shared
@@ -9,15 +9,15 @@
 <div class="card">
     <div class="card-header">
         <span>
-            <i class="bi bi-person" /> Projects
-            <a class="btn btn-primary btn-sm float-end" href="/Projects/create"><i class="bi bi-plus-circle" />New Project</a>
+            <i class="bi bi-person" /> Resources
+            <a class="btn btn-primary btn-sm float-end" href="/Resources/create"><i class="bi bi-plus-circle" />New Resource</a>
 
         </span>
     </div>
 
     <div class="card-body">
 
-        <GenericList MyList="Projects">
+        <GenericList MyList="Resources">
 
             <Body>
                 <table class="table table-striped">
@@ -27,18 +27,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Projects!)
+                        @foreach (var item in Resources!)
                         {
                             <tr>
-
                                 <td> @item.Id</td>
                                 <td> @item.Nombre</td>
-                                <td>@item.Descripcion </td>
-                                <td>@item.FechaInicio</td>
-                                <td>@item.FechaFinal</td>
+                                <td> @item.Proveedor</td>
+                                <td>@item.CantidadRequerida </td>
+                                <td>@item.FechaEntregaEstimada</td>
 
                                 <td>
-                                    <a href="/Projects/edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square" /> Editar</a>
+                                    <a href="/Resources/edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square" /> Editar</a>
                                     <button @onclick=@(() => DeleteAsycn(item)) class="btn btn-sm btn-danger"><i class="bi bi-trash-fill" /> Borrar</button>
                                 </td>
                             </tr>
@@ -52,7 +51,7 @@
 
 
 @code {
-    public List<Project> Projects { get; set; }
+    public List<Resource> Resources { get; set; }
 
 
     protected override async Task OnInitializedAsync()
@@ -62,24 +61,24 @@
 
     private async Task LoadAsync()
     {
-        var responseHttp = await repository.GetAsync<List<Project>>("api/Projects");
+        var responseHttp = await repository.GetAsync<List<Resource>>("api/Resources");
         if (responseHttp.Error)
         {
             var message = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
             return;
         }
-        Projects = responseHttp.Response;
+        Resources = responseHttp.Response;
     }
 
 
 
-    private async Task DeleteAsycn(Project project)
+    private async Task DeleteAsycn(Resource resource)
     {
         var result = await sweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Confirmación",
-                Text = $"¿Estas seguro de querer borrar el proyecto: {project.Nombre}?",
+                Text = $"¿Estas seguro de querer borrar el recurso: {resource.Nombre}?",
                 Icon = SweetAlertIcon.Question,
                 ShowCancelButton = true,
             });
@@ -89,12 +88,12 @@
             return;
         }
 
-        var responseHttp = await repository.DeleteAsync<Project>($"api/Projects/{project.Id}");
+        var responseHttp = await repository.DeleteAsync<Resource>($"api/Resources/{resource.Id}");
         if (responseHttp.Error)
         {
             if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                navigationManager.NavigateTo("Projects");
+                navigationManager.NavigateTo("Resources");
             }
             else
             {

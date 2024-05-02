@@ -10,42 +10,46 @@
     <div class="mb-3">
         <label>Nombre:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Nombre" />
-            <ValidationMessage For="@(()=>Project.Nombre)" />
+            <InputText class="form-control" @bind-Value="Activity.Nombre" />
+            <ValidationMessage For="@(()=>Activity.Nombre)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>Descripcion:</label>
+        <label>Project Id:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Descripcion" />
-            <ValidationMessage For="@(()=>Project.Descripcion)" />
+            <InputNumber @bind-Value="Activity.ProjectId" />
+            <ValidationMessage For="@(()=>Activity.ProjectId)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaInicio:</label>
+        <label>Descripción:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaInicio" />
-            <ValidationMessage For="@(()=>Project.FechaInicio)" />
+            <InputText class="form-control" @bind-Value="Activity.Descripcion" />
+            <ValidationMessage For="@(()=>Activity.Descripcion)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaFinal:</label>
+        <label>Fecha Inicio:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaFinal" />
-            <ValidationMessage For="@(()=>Project.FechaFinal)" />
+            <InputDate @bind-Value="Activity.FechaInicio" />
+            <ValidationMessage For="@(()=>Activity.FechaInicio)" />
         </div>
     </div>
 
+    <div class="mb-3">
+        <label>Fecha Final:</label>
+        <div>
+            <InputDate @bind-Value="Activity.FechaFinal" />
+            <ValidationMessage For="@(()=>Activity.FechaFinal)" />
+        </div>
+    </div>
 
     <button class="btn btn-primary" type="submit">Guardar</button>
     <button class="btn btn-info" type="reset">Limpiar</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
-
-
-
 
 </EditForm>
 
@@ -55,13 +59,13 @@
     private EditContext editContext = null!;
     protected override void OnInitialized()
     {
-        editContext = new(Project);
+        editContext = new(Activity);
     }
 
     [EditorRequired]
     [Parameter]
 
-    public Project Project { get; set; }
+    public Activity Activity { get; set; }
 
 
     [EditorRequired]

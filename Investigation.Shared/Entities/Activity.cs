@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -24,13 +25,14 @@ namespace Investigation.Shared.Entities
 
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
-        public DateTime FechaInicio { get; set; }
+        public DateOnly FechaInicio { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
-        public DateTime FechaFinal { get; set; }
+        public DateOnly FechaFinal { get; set; }
 
         [JsonIgnore]
         public Project Projects { get; set; }
+        public int ProjectId { get; set; }
 
 
     }

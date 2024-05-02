@@ -22,13 +22,13 @@ namespace Investigation.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
         public string  Autor { get; set; }
 
-        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd HH:mm}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
-        public DateTime FechaPublicacion { get; set; }
+        public DateOnly FechaPublicacion { get; set; }
 
         [JsonIgnore]
         public Project Projects { get; set; }
-
+        public int ProjectId { get; set; }
 
 
     }

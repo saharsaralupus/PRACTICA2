@@ -28,46 +28,33 @@ namespace Investigation.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(int resourceId, int activityId)
+        public async Task<ActionResult> Post(ActivityResource activitiesResource)
         {
-            var resource = await _context.Resources.FindAsync(resourceId);
-            var activity = await _context.Activities.FindAsync(activityId);
-
-            if (resource == null)
-            {
-                return NotFound("Recurso no encontrado");
-            }
-            if (activity == null)
-            {
-                return NotFound("Actividad no encontrado");
-            }
-
-            var idActivityResource = new ActivityResource
-            {
-                Activities = activity,
-                Resources = resource
-            };
-
-            _context.ActivityResources.Add(idActivityResource);
+            _context.ActivityResources.Add(activitiesResource);
             await _context.SaveChangesAsync();
+            return Ok(activitiesResource);
+        }
 
-            return Ok(idActivityResource);
+        [HttpPut]
+        public async Task<ActionResult> Put(ActivityResource activityResource)
+        {
+
+            _context.Update(activityResource);
+            await _context.SaveChangesAsync();
+            return Ok(activityResource);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult> Get(int id)
+        public async Task<ActionResult<ActivityResource>> Get(int id)
         {
-            var activityResource = await _context.ActivityResources
-                .Include(ar => ar.Activities)
-                .Include(ar => ar.Resources)
-                .FirstOrDefaultAsync(ar => ar.Id == id);
+            var activityResource = await _context.ActivityResources.FindAsync(id);
 
             if (activityResource == null)
             {
                 return NotFound();
             }
 
-            return Ok(activityResource);
+            return activityResource;
         }
 
         [HttpDelete("{id:int}")]

@@ -12,15 +12,15 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Investigation.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20240430051256_InicialPro")]
-    partial class InicialPro
+    [Migration("20240502003849_Inicial")]
+    partial class Inicial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.3")
+                .HasAnnotation("ProductVersion", "8.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -38,28 +38,23 @@ namespace Investigation.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime>("FechaFinal")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("FechaFinal")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("FechaInicio")
+                        .HasColumnType("date");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProjectsId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectsId");
 
                     b.ToTable("Activities");
                 });
@@ -72,17 +67,17 @@ namespace Investigation.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("ActivitiesId")
+                    b.Property<int>("ActivityId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ResourcesId")
+                    b.Property<int>("ResourceId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ActivitiesId");
+                    b.HasIndex("ActivityId");
 
-                    b.HasIndex("ResourcesId");
+                    b.HasIndex("ResourceId");
 
                     b.ToTable("ActivityResources");
                 });
@@ -126,17 +121,17 @@ namespace Investigation.API.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("InvestigatorsId")
+                    b.Property<int>("InvestigatorId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ProjectsId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("InvestigatorsId");
+                    b.HasIndex("InvestigatorId");
 
-                    b.HasIndex("ProjectsId");
+                    b.HasIndex("ProjectId");
 
                     b.ToTable("InvestigatorProyects");
                 });
@@ -154,11 +149,11 @@ namespace Investigation.API.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<DateTime>("FechaFinal")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("FechaFinal")
+                        .HasColumnType("date");
 
-                    b.Property<DateTime>("FechaInicio")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("FechaInicio")
+                        .HasColumnType("date");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -183,13 +178,10 @@ namespace Investigation.API.Migrations
                         .HasMaxLength(50)
                         .HasColumnType("nvarchar(50)");
 
-                    b.Property<DateTime>("FechaPublicacion")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("FechaPublicacion")
+                        .HasColumnType("date");
 
-                    b.Property<int?>("ProjectId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ProjectsId")
+                    b.Property<int>("ProjectId")
                         .HasColumnType("int");
 
                     b.Property<string>("Titulo")
@@ -200,8 +192,6 @@ namespace Investigation.API.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProjectId");
-
-                    b.HasIndex("ProjectsId");
 
                     b.ToTable("Publications");
                 });
@@ -217,8 +207,8 @@ namespace Investigation.API.Migrations
                     b.Property<int>("CantidadRequerida")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("FechaEntregaEstimada")
-                        .HasColumnType("datetime2");
+                    b.Property<DateOnly>("FechaEntregaEstimada")
+                        .HasColumnType("date");
 
                     b.Property<string>("Nombre")
                         .IsRequired()
@@ -237,14 +227,11 @@ namespace Investigation.API.Migrations
 
             modelBuilder.Entity("Investigation.Shared.Entities.Activity", b =>
                 {
-                    b.HasOne("Investigation.Shared.Entities.Project", null)
-                        .WithMany("Activities")
-                        .HasForeignKey("ProjectId");
-
                     b.HasOne("Investigation.Shared.Entities.Project", "Projects")
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Activities")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Projects");
                 });
@@ -253,13 +240,15 @@ namespace Investigation.API.Migrations
                 {
                     b.HasOne("Investigation.Shared.Entities.Activity", "Activities")
                         .WithMany()
-                        .HasForeignKey("ActivitiesId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ActivityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Investigation.Shared.Entities.Resource", "Resources")
                         .WithMany()
-                        .HasForeignKey("ResourcesId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ResourceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Activities");
 
@@ -270,13 +259,15 @@ namespace Investigation.API.Migrations
                 {
                     b.HasOne("Investigation.Shared.Entities.Investigator", "Investigators")
                         .WithMany()
-                        .HasForeignKey("InvestigatorsId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("InvestigatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Investigation.Shared.Entities.Project", "Projects")
                         .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Investigators");
 
@@ -285,14 +276,11 @@ namespace Investigation.API.Migrations
 
             modelBuilder.Entity("Investigation.Shared.Entities.Publication", b =>
                 {
-                    b.HasOne("Investigation.Shared.Entities.Project", null)
-                        .WithMany("Publications")
-                        .HasForeignKey("ProjectId");
-
                     b.HasOne("Investigation.Shared.Entities.Project", "Projects")
-                        .WithMany()
-                        .HasForeignKey("ProjectsId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .WithMany("Publications")
+                        .HasForeignKey("ProjectId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Projects");
                 });

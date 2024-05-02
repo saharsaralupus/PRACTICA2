@@ -1,0 +1,67 @@
+﻿@page "/ActivitiesResources/create"
+
+@inject IRepository repository
+@inject NavigationManager navigationManager
+@inject SweetAlertService sweetAlertService
+
+
+<h3>RelationshipCreate</h3>
+<ActivityResourceForm @ref="activityResourceForm" ActivityResource="activityResource" OnSubmit="Create" ReturnAction="Return" />
+
+@code {
+    private ActivityResource activityResource = new();
+    private ActivityResourceForm activityResourceForm;
+
+
+
+    private async Task Create()
+    {
+
+
+        var responseHttp = await repository.PostAsync("/api/ActivitiesResources", activityResource);
+        if (responseHttp.Error)
+        {
+
+            var message = await responseHttp.GetErrorMessageAsync();
+            await sweetAlertService.FireAsync("Error", message);
+            return;
+
+
+        }
+
+        Return();
+
+        var toast = sweetAlertService.Mixin(new SweetAlertOptions
+            {
+
+                Toast = true,
+                Position = SweetAlertPosition.BottomEnd,
+                ShowConfirmButton = true,
+                Timer = 3000
+
+
+
+
+            });
+
+
+        await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Registro creado con éxito");
+    }
+
+
+    private void Return()
+    {
+
+
+
+
+        activityResourceForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/ActivitiesResources");
+
+
+
+
+    }
+
+
+}

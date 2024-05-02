@@ -1,0 +1,74 @@
+﻿@page "/Resources/edit/{Id:int}"
+@using System.Net
+@inject NavigationManager navigationManager
+@inject IRepository repository
+@inject SweetAlertService sweetAlertService
+
+<h3>Editar</h3>
+
+@if (resource is null)
+{
+    <p>Cargando...</p>
+}
+else
+{
+    <ResourceForm @ref="resourceForm" Resource="resource" OnSubmit="Editar" ReturnAction="Return" />
+
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    private Resource resource;
+    private ResourceForm resourceForm;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var responseHttp = await repository.GetAsync<Resource>($"api/Resources/{Id}");
+        if (responseHttp.Error)
+        {
+            if (responseHttp.HttpResponseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                navigationManager.NavigateTo("/Resources");
+            }
+            else
+            {
+                var messsage = await responseHttp.GetErrorMessageAsync();
+                await sweetAlertService.FireAsync("Error", messsage, SweetAlertIcon.Error);
+            }
+        }
+        else
+        {
+            resource = responseHttp.Response;
+        }
+    }
+
+
+    private async Task Editar()
+    {
+        var responseHttp = await repository.PutAsync("/api/Resources", resource);
+        if (responseHttp.Error)
+        {
+            var message = await responseHttp.GetErrorMessageAsync();
+    await sweetAlertService.FireAsync("Error", message);
+            return;
+        }
+
+    Return();
+    var toast = sweetAlertService.Mixin(new SweetAlertOptions
+    {
+        Toast = true,
+        Position = SweetAlertPosition.BottomEnd,
+        ShowConfirmButton = true,
+        Timer = 3000
+    });
+    await toast.FireAsync(icon: SweetAlertIcon.Success, message: "Cambios guardados con éxito.");
+}
+
+        private void Return()
+        {
+        resourceForm!.FormPostedSuccessfully = true;
+        navigationManager.NavigateTo("/Resources");
+        }
+   
+}

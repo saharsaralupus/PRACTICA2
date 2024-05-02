@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Investigation.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InicialPro : Migration
+    public partial class Inicial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -35,8 +35,8 @@ namespace Investigation.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFinal = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FechaInicio = table.Column<DateOnly>(type: "date", nullable: false),
+                    FechaFinal = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -52,7 +52,7 @@ namespace Investigation.API.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     CantidadRequerida = table.Column<int>(type: "int", nullable: false),
                     Proveedor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    FechaEntregaEstimada = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FechaEntregaEstimada = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -67,10 +67,9 @@ namespace Investigation.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Nombre = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Descripcion = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    FechaInicio = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FechaFinal = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProjectsId = table.Column<int>(type: "int", nullable: true),
-                    ProjectId = table.Column<int>(type: "int", nullable: true)
+                    FechaInicio = table.Column<DateOnly>(type: "date", nullable: false),
+                    FechaFinal = table.Column<DateOnly>(type: "date", nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -78,11 +77,6 @@ namespace Investigation.API.Migrations
                     table.ForeignKey(
                         name: "FK_Activities_Projects_ProjectId",
                         column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Activities_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -94,21 +88,21 @@ namespace Investigation.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ProjectsId = table.Column<int>(type: "int", nullable: true),
-                    InvestigatorsId = table.Column<int>(type: "int", nullable: true)
+                    ProjectId = table.Column<int>(type: "int", nullable: false),
+                    InvestigatorId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_InvestigatorProyects", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InvestigatorProyects_Investigators_InvestigatorsId",
-                        column: x => x.InvestigatorsId,
+                        name: "FK_InvestigatorProyects_Investigators_InvestigatorId",
+                        column: x => x.InvestigatorId,
                         principalTable: "Investigators",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_InvestigatorProyects_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
+                        name: "FK_InvestigatorProyects_Projects_ProjectId",
+                        column: x => x.ProjectId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -122,9 +116,8 @@ namespace Investigation.API.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Titulo = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     Autor = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    FechaPublicacion = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProjectsId = table.Column<int>(type: "int", nullable: true),
-                    ProjectId = table.Column<int>(type: "int", nullable: true)
+                    FechaPublicacion = table.Column<DateOnly>(type: "date", nullable: false),
+                    ProjectId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -132,11 +125,6 @@ namespace Investigation.API.Migrations
                     table.ForeignKey(
                         name: "FK_Publications_Projects_ProjectId",
                         column: x => x.ProjectId,
-                        principalTable: "Projects",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Publications_Projects_ProjectsId",
-                        column: x => x.ProjectsId,
                         principalTable: "Projects",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -148,21 +136,21 @@ namespace Investigation.API.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ResourcesId = table.Column<int>(type: "int", nullable: true),
-                    ActivitiesId = table.Column<int>(type: "int", nullable: true)
+                    ResourceId = table.Column<int>(type: "int", nullable: false),
+                    ActivityId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_ActivityResources", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ActivityResources_Activities_ActivitiesId",
-                        column: x => x.ActivitiesId,
+                        name: "FK_ActivityResources_Activities_ActivityId",
+                        column: x => x.ActivityId,
                         principalTable: "Activities",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_ActivityResources_Resources_ResourcesId",
-                        column: x => x.ResourcesId,
+                        name: "FK_ActivityResources_Resources_ResourceId",
+                        column: x => x.ResourceId,
                         principalTable: "Resources",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -174,39 +162,29 @@ namespace Investigation.API.Migrations
                 column: "ProjectId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Activities_ProjectsId",
-                table: "Activities",
-                column: "ProjectsId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_ActivityResources_ActivitiesId",
+                name: "IX_ActivityResources_ActivityId",
                 table: "ActivityResources",
-                column: "ActivitiesId");
+                column: "ActivityId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ActivityResources_ResourcesId",
+                name: "IX_ActivityResources_ResourceId",
                 table: "ActivityResources",
-                column: "ResourcesId");
+                column: "ResourceId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InvestigatorProyects_InvestigatorsId",
+                name: "IX_InvestigatorProyects_InvestigatorId",
                 table: "InvestigatorProyects",
-                column: "InvestigatorsId");
+                column: "InvestigatorId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InvestigatorProyects_ProjectsId",
+                name: "IX_InvestigatorProyects_ProjectId",
                 table: "InvestigatorProyects",
-                column: "ProjectsId");
+                column: "ProjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Publications_ProjectId",
                 table: "Publications",
                 column: "ProjectId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Publications_ProjectsId",
-                table: "Publications",
-                column: "ProjectsId");
         }
 
         /// <inheritdoc />

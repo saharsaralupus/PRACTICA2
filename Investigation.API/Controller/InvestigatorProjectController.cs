@@ -31,34 +31,24 @@ namespace Investigation.API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Post(int projectId, int investigatorId)
+        public async Task<ActionResult> Post(InvestigatorProject investigatorProject)
         {
-            var project = await _context.Projects.FindAsync(projectId);
-            var investigator = await _context.Investigators.FindAsync(investigatorId);
-
-            if (project == null)
-            {
-                return NotFound("Proyecto no encontrado");
-            }
-            if (investigator == null)
-            {
-                return NotFound("Investigador no encontrado");
-            }
-
-            var idInvestigatorProyect = new InvestigatorProject
-            {
-                Projects = project,
-                Investigators = investigator
-            };
-
-            _context.InvestigatorProyects.Add(idInvestigatorProyect);
+            _context.InvestigatorProyects.Add(investigatorProject);
             await _context.SaveChangesAsync();
+            return Ok(investigatorProject);
+        }
 
-            return Ok(idInvestigatorProyect);
+        [HttpPut]
+        public async Task<ActionResult> Put(InvestigatorProject investigatorProject)
+        {
+
+            _context.Update(investigatorProject);
+            await _context.SaveChangesAsync();
+            return Ok(investigatorProject);
         }
 
         [HttpGet("{id:int}")]
-        public async Task<ActionResult<InvestigatorProject>> GetInvestigatorProyect(int id)
+        public async Task<ActionResult<InvestigatorProject>> Get(int id)
         {
             var investigatorProyect = await _context.InvestigatorProyects.FindAsync(id);
 
@@ -72,18 +62,23 @@ namespace Investigation.API.Controllers
 
 
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> DeleteActivityResource(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var investigatorProyect = await _context.InvestigatorProyects.FindAsync(id);
-            if (investigatorProyect == null)
+
+            var filasafectadas = await _context.InvestigatorProyects
+                .Where(x => x.Id == id)
+                .ExecuteDeleteAsync();
+
+            if (filasafectadas == 0)
             {
-                return NotFound();
+
+
+                return NotFound();  //404
             }
 
-            _context.InvestigatorProyects.Remove(investigatorProyect);
-            await _context.SaveChangesAsync();
+            return NoContent();//204
 
-            return NoContent();
+
         }
     }
 }

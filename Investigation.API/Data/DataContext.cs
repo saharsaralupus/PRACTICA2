@@ -51,6 +51,16 @@ namespace Investigation.API.Data
              .HasOne(x => x.Projects)
              .WithMany()
              .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<Activity>()
+              .HasOne(a => a.Projects)
+              .WithMany(p => p.Activities)
+              .HasForeignKey(a => a.ProjectId);
+
+            modelBuilder.Entity<Publication>()
+              .HasOne(a => a.Projects)
+              .WithMany(p => p.Publications)
+              .HasForeignKey(a => a.ProjectId);
         }
 
     }

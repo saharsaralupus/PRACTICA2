@@ -1,4 +1,4 @@
-﻿@page "/Projects"
+﻿@page "/InvestigatorsProjects"
 @using Investigation.Shared.Entities
 @using Investigation.WEB.Repositories
 @using Investigation.WEB.Shared
@@ -9,15 +9,15 @@
 <div class="card">
     <div class="card-header">
         <span>
-            <i class="bi bi-person" /> Projects
-            <a class="btn btn-primary btn-sm float-end" href="/Projects/create"><i class="bi bi-plus-circle" />New Project</a>
+            <i class="bi bi-person" /> InvestigatorsProjects
+            <a class="btn btn-primary btn-sm float-end" href="/InvestigatorsProjects/create"><i class="bi bi-plus-circle" />New Relationship</a>
 
         </span>
     </div>
 
     <div class="card-body">
 
-        <GenericList MyList="Projects">
+        <GenericList MyList="InvestigatorsProjects">
 
             <Body>
                 <table class="table table-striped">
@@ -27,18 +27,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Projects!)
+                        @foreach (var item in InvestigatorsProjects!)
                         {
                             <tr>
-
                                 <td> @item.Id</td>
-                                <td> @item.Nombre</td>
-                                <td>@item.Descripcion </td>
-                                <td>@item.FechaInicio</td>
-                                <td>@item.FechaFinal</td>
+                                <td> @GetInvestigatorName(item.InvestigatorId)</td>
+                                <td> @GetProjectName(item.ProjectId)</td>
+                                
 
                                 <td>
-                                    <a href="/Projects/edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square" /> Editar</a>
+                                    <a href="/InvestigatorsProjects/edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square" /> Editar</a>
                                     <button @onclick=@(() => DeleteAsycn(item)) class="btn btn-sm btn-danger"><i class="bi bi-trash-fill" /> Borrar</button>
                                 </td>
                             </tr>
@@ -52,8 +50,9 @@
 
 
 @code {
+    public List<InvestigatorProject> InvestigatorsProjects { get; set; }
+    public List<Investigator> Investigators { get; set; }
     public List<Project> Projects { get; set; }
-
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,24 +61,48 @@
 
     private async Task LoadAsync()
     {
-        var responseHttp = await repository.GetAsync<List<Project>>("api/Projects");
+        var responseHttp = await repository.GetAsync<List<InvestigatorProject>>("api/InvestigatorsProjects");
         if (responseHttp.Error)
         {
             var message = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
             return;
         }
-        Projects = responseHttp.Response;
+        InvestigatorsProjects = responseHttp.Response;
+
+         var responseInvestigators = await repository.GetAsync<List<Investigator>>("api/Investigators");
+        if (!responseInvestigators.Error)
+        {
+             Investigators = responseInvestigators.Response;
+         }
+
+        var responseProjects = await repository.GetAsync<List<Project>>("api/Projects");
+        if (!responseProjects.Error)
+        {
+            Projects = responseProjects.Response;
+        }
+    }
+
+    private string GetInvestigatorName(int investigatorId)
+    {
+        var investigator = Investigators.FirstOrDefault(i => i.Id == investigatorId);
+        return investigator != null ? investigator.Nombre : "Investigador no encontrado";
+    }
+
+    private string GetProjectName(int projectId)
+    {
+        var project = Projects.FirstOrDefault(i => i.Id == projectId);
+        return project != null ? project.Nombre : "Proyecto no encontrado";
     }
 
 
 
-    private async Task DeleteAsycn(Project project)
+    private async Task DeleteAsycn(InvestigatorProject investigatorproject)
     {
         var result = await sweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Confirmación",
-                Text = $"¿Estas seguro de querer borrar el proyecto: {project.Nombre}?",
+                Text = $"¿Estas seguro de querer borrar la relación entre el investigador de Id {investigatorproject.InvestigatorId} y proyecto de Id {investigatorproject.ProjectId}?",
                 Icon = SweetAlertIcon.Question,
                 ShowCancelButton = true,
             });
@@ -89,12 +112,12 @@
             return;
         }
 
-        var responseHttp = await repository.DeleteAsync<Project>($"api/Projects/{project.Id}");
+        var responseHttp = await repository.DeleteAsync<InvestigatorProject>($"api/InvestigatorsProjects/{investigatorproject.Id}");
         if (responseHttp.Error)
         {
             if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                navigationManager.NavigateTo("Projects");
+                navigationManager.NavigateTo("InvestigatorsProjects");
             }
             else
             {

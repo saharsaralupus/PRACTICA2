@@ -1,4 +1,4 @@
-﻿@page "/Projects"
+﻿@page "/ActivitiesResources"
 @using Investigation.Shared.Entities
 @using Investigation.WEB.Repositories
 @using Investigation.WEB.Shared
@@ -9,15 +9,15 @@
 <div class="card">
     <div class="card-header">
         <span>
-            <i class="bi bi-person" /> Projects
-            <a class="btn btn-primary btn-sm float-end" href="/Projects/create"><i class="bi bi-plus-circle" />New Project</a>
+            <i class="bi bi-person" /> ActivitiesResources
+            <a class="btn btn-primary btn-sm float-end" href="/ActivitiesResources/create"><i class="bi bi-plus-circle" />New Relationship</a>
 
         </span>
     </div>
 
     <div class="card-body">
 
-        <GenericList MyList="Projects">
+        <GenericList MyList="ActivitiesResources">
 
             <Body>
                 <table class="table table-striped">
@@ -27,18 +27,16 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var item in Projects!)
+                        @foreach (var item in ActivitiesResources!)
                         {
                             <tr>
-
                                 <td> @item.Id</td>
-                                <td> @item.Nombre</td>
-                                <td>@item.Descripcion </td>
-                                <td>@item.FechaInicio</td>
-                                <td>@item.FechaFinal</td>
+                                <td> @GetActivityName(item.ActivityId)</td>
+                                <td> @GetResourceName(item.ResourceId)</td>
+
 
                                 <td>
-                                    <a href="/Projects/edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square" /> Editar</a>
+                                    <a href="/ActivitiesResources/edit/@item.Id" class="btn btn-sm btn-warning"><i class="bi bi-pencil-square" /> Editar</a>
                                     <button @onclick=@(() => DeleteAsycn(item)) class="btn btn-sm btn-danger"><i class="bi bi-trash-fill" /> Borrar</button>
                                 </td>
                             </tr>
@@ -52,8 +50,9 @@
 
 
 @code {
-    public List<Project> Projects { get; set; }
-
+    public List<ActivityResource> ActivitiesResources { get; set; }
+    public List<Activity> Activities { get; set; }
+    public List<Resource> Resources { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -62,24 +61,48 @@
 
     private async Task LoadAsync()
     {
-        var responseHttp = await repository.GetAsync<List<Project>>("api/Projects");
+        var responseHttp = await repository.GetAsync<List<ActivityResource>>("api/ActivitiesResources");
         if (responseHttp.Error)
         {
             var message = await responseHttp.GetErrorMessageAsync();
             await sweetAlertService.FireAsync("Error", message, SweetAlertIcon.Error);
             return;
         }
-        Projects = responseHttp.Response;
+        ActivitiesResources = responseHttp.Response;
+
+        var responseInvestigators = await repository.GetAsync<List<Activity>>("api/Activities");
+        if (!responseInvestigators.Error)
+        {
+            Activities = responseInvestigators.Response;
+        }
+
+        var responseProjects = await repository.GetAsync<List<Resource>>("api/Resources");
+        if (!responseProjects.Error)
+        {
+            Resources = responseProjects.Response;
+        }
+    }
+
+    private string GetActivityName(int activityId)
+    {
+        var activity = Activities.FirstOrDefault(i => i.Id == activityId);
+        return activity != null ? activity.Nombre : "Actividad no encontrado";
+    }
+
+    private string GetResourceName(int resourceId)
+    {
+        var resource = Resources.FirstOrDefault(i => i.Id == resourceId);
+        return resource != null ? resource.Nombre : "Recurso no encontrado";
     }
 
 
 
-    private async Task DeleteAsycn(Project project)
+    private async Task DeleteAsycn(ActivityResource activityResource)
     {
         var result = await sweetAlertService.FireAsync(new SweetAlertOptions
             {
                 Title = "Confirmación",
-                Text = $"¿Estas seguro de querer borrar el proyecto: {project.Nombre}?",
+                Text = $"¿Estas seguro de querer borrar la relación entre la actividad de Id {activityResource.ActivityId} y el recurso de Id {activityResource.ResourceId}?",
                 Icon = SweetAlertIcon.Question,
                 ShowCancelButton = true,
             });
@@ -89,12 +112,12 @@
             return;
         }
 
-        var responseHttp = await repository.DeleteAsync<Project>($"api/Projects/{project.Id}");
+        var responseHttp = await repository.DeleteAsync<ActivityResource>($"api/ActivitiesResources/{activityResource.Id}");
         if (responseHttp.Error)
         {
             if (responseHttp.HttpResponseMessage.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                navigationManager.NavigateTo("Projects");
+                navigationManager.NavigateTo("ActivitiesResources");
             }
             else
             {

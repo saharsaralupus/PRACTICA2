@@ -1,78 +1,49 @@
-﻿﻿@using Investigation.Shared.Entities
+﻿@using Investigation.Shared.Entities
 @inject SweetAlertService swal
 
 <NavigationLock OnBeforeInternalNavigation="OnBeforeInternalNavigation"></NavigationLock>
-
 
 <EditForm EditContext="editContext" OnValidSubmit="OnSubmit">
     <DataAnnotationsValidator />
 
     <div class="mb-3">
-        <label>Nombre:</label>
+        <label>Activity Id:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Nombre" />
-            <ValidationMessage For="@(()=>Project.Nombre)" />
+            <InputNumber class="form-control" @bind-Value="ActivityResource.ActivityId" />
+            <ValidationMessage For="@(()=>ActivityResource.ActivityId)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>Descripcion:</label>
+        <label>Resource Id:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Descripcion" />
-            <ValidationMessage For="@(()=>Project.Descripcion)" />
+            <InputNumber class="form-control" @bind-Value="ActivityResource.ResourceId" />
+            <ValidationMessage For="@(()=>ActivityResource.ResourceId)" />
         </div>
     </div>
-
-    <div class="mb-3">
-        <label>FechaInicio:</label>
-        <div>
-            <InputDate @bind-Value="Project.FechaInicio" />
-            <ValidationMessage For="@(()=>Project.FechaInicio)" />
-        </div>
-    </div>
-
-    <div class="mb-3">
-        <label>FechaFinal:</label>
-        <div>
-            <InputDate @bind-Value="Project.FechaFinal" />
-            <ValidationMessage For="@(()=>Project.FechaFinal)" />
-        </div>
-    </div>
-
 
     <button class="btn btn-primary" type="submit">Guardar</button>
     <button class="btn btn-info" type="reset">Limpiar</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
 
-
-
-
 </EditForm>
-
 
 @code {
 
     private EditContext editContext = null!;
     protected override void OnInitialized()
     {
-        editContext = new(Project);
+        editContext = new EditContext(ActivityResource);
     }
 
-    [EditorRequired]
     [Parameter]
+    public ActivityResource ActivityResource { get; set; }
 
-    public Project Project { get; set; }
-
-
-    [EditorRequired]
     [Parameter]
     public EventCallback OnSubmit { get; set; }
 
-
-    [EditorRequired]
     [Parameter]
     public EventCallback ReturnAction { get; set; }
-
 
     public bool FormPostedSuccessfully { get; set; } = false;
 
@@ -107,5 +78,4 @@
 
         context.PreventNavigation();
     }
-
 }

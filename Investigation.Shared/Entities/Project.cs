@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
+
 namespace Investigation.Shared.Entities
 {
     public class Project
@@ -21,13 +22,12 @@ namespace Investigation.Shared.Entities
         [MaxLength(100, ErrorMessage = "No se permiten más de 100 dcaracteres")]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
         public string Descripcion { get; set; }
-
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
-        public DateTime FechaInicio { get; set; }
+        public DateOnly FechaInicio { get; set; }
         [DisplayFormat(DataFormatString = "{0:yyyy/MM/dd}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "El campo {0} es obligaptorio")]
-        public DateTime FechaFinal {  get; set; }
+        public DateOnly FechaFinal {  get; set; }
 
 
         [JsonIgnore]

@@ -10,42 +10,38 @@
     <div class="mb-3">
         <label>Nombre:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Nombre" />
-            <ValidationMessage For="@(()=>Project.Nombre)" />
+            <InputText class="form-control" @bind-Value="Investigator.Nombre" />
+            <ValidationMessage For="@(()=>Investigator.Nombre)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>Descripcion:</label>
+        <label>Cedula:</label>
         <div>
-            <InputText class="form-control" @bind-Value="Project.Descripcion" />
-            <ValidationMessage For="@(()=>Project.Descripcion)" />
+            <InputNumber @bind-Value="Investigator.Cedula" />
+            <ValidationMessage For="@(()=>Investigator.Cedula)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaInicio:</label>
+        <label>Afiliación:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaInicio" />
-            <ValidationMessage For="@(()=>Project.FechaInicio)" />
+            <InputText class="form-control" @bind-Value="Investigator.Afiliacion" />
+            <ValidationMessage For="@(()=>Investigator.Afiliacion)" />
         </div>
     </div>
 
     <div class="mb-3">
-        <label>FechaFinal:</label>
+        <label>Especialidad:</label>
         <div>
-            <InputDate @bind-Value="Project.FechaFinal" />
-            <ValidationMessage For="@(()=>Project.FechaFinal)" />
+            <InputText class="form-control" @bind-Value="Investigator.Especialidad" />
+            <ValidationMessage For="@(()=>Investigator.Especialidad)" />
         </div>
     </div>
-
 
     <button class="btn btn-primary" type="submit">Guardar</button>
     <button class="btn btn-info" type="reset">Limpiar</button>
     <button class="btn btn-success" @onclick="ReturnAction">Regresar</button>
-
-
-
 
 </EditForm>
 
@@ -55,13 +51,13 @@
     private EditContext editContext = null!;
     protected override void OnInitialized()
     {
-        editContext = new(Project);
+        editContext = new(Investigator);
     }
 
     [EditorRequired]
     [Parameter]
 
-    public Project Project { get; set; }
+    public Investigator Investigator { get; set; }
 
 
     [EditorRequired]

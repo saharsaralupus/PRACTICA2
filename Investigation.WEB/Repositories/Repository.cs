@@ -77,7 +77,6 @@ namespace Investigation.WEB.Repositories
             }
             return new HttpResponseWrapper<TActionResponse>(default, true, responseHttp);
         }
-
         private async Task<T> UnserializeAnswerAsync<T>(HttpResponseMessage responseHttp)
         {
             var response = await responseHttp.Content.ReadAsStringAsync();

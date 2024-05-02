@@ -33,12 +33,12 @@ namespace Investigation.API.Controllers
 
         [HttpPost]
 
-        public async Task<ActionResult> Post(Project proyect)
+        public async Task<ActionResult> Post(Project project)
         {
 
-            _context.Add(proyect);
+            _context.Add(project);
             await _context.SaveChangesAsync();
-            return Ok(proyect);
+            return Ok(project);
         }
 
         [HttpGet("{id:int}")]
@@ -62,12 +62,12 @@ namespace Investigation.API.Controllers
 
         [HttpPut]
 
-        public async Task<ActionResult> Put(Project proyect)
+        public async Task<ActionResult> Put(Project project)
         {
 
-            _context.Update(proyect);
+            _context.Update(project);
             await _context.SaveChangesAsync();
-            return Ok(proyect);
+            return Ok(project);
         }
 
 

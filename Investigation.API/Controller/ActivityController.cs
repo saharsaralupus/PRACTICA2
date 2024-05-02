@@ -25,36 +25,13 @@ namespace Investigation.API.Controllers
         [HttpGet]
         public async Task<ActionResult> Get()
         {
-            var activities = await _context.Activities.Include(x => x.Projects).ToListAsync();
-
-            var modelo = activities.Select(activity => new 
-            { 
-                
-                activity.Id,
-                activity.Descripcion,
-                activity.FechaInicio,
-                activity.FechaFinal,
-                ProyectId = activity.Projects != null ? (int?)activity.Projects.Id : null,
-                associatedProject = activity.Projects != null ? (string?)activity.Projects.Nombre : null,
-
-
-            });
-
-            return Ok(modelo);
+            return Ok(await _context.Activities.ToListAsync());
         }
 
         [HttpPost]
-
-        public async Task<ActionResult> Post(int ProjectID, Activity activity)
+        public async Task<ActionResult> Post(Activity activity)
         {
-            var project = await _context.Projects.FindAsync(ProjectID);
-            if (project == null)
-            {
-                return NotFound("Proyecto no encontrado");
-            }
-
-            activity.Projects = project;
-            _context.Add(activity);
+            _context.Activities.Add(activity);
             await _context.SaveChangesAsync();
             return Ok(activity);
         }
