@@ -4,7 +4,7 @@
 @inject SweetAlertService sweetAlertService
 
 
-<h3>ActivityCreate</h3>
+<h3>PublicationCreate</h3>
 <PublicationForm @ref="publicationForm" Publication="publication" OnSubmit="Create" ReturnAction="Return" />
 
 
@@ -41,8 +41,6 @@
                 Timer = 3000
 
 
-
-
         });
 
 
@@ -53,16 +51,8 @@
     private void Return()
     {
 
-
-
-
         publicationForm!.FormPostedSuccessfully = true;
         navigationManager.NavigateTo("/Publications");
 
-
-
-
     }
-
-
 }
