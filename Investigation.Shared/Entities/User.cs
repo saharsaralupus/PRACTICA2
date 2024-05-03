@@ -18,11 +18,11 @@ namespace Investigation.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Document { get; set; }
 
-        [MaxLength(50, ErrorMessage = "No se permiten más de 50 Caracteres")]
+        [MaxLength(50, ErrorMessage = "No se permiten más de 50 caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string FirstName { get; set; }
 
-        [MaxLength(50, ErrorMessage = "No se permiten más de 50 Caracteres")]
+        [MaxLength(50, ErrorMessage = "No se permiten más de 50 caracteres")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string LastName { get; set; }
         public string Address { get; set; }

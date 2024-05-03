@@ -14,19 +14,19 @@ namespace Investigation.Shared.Entities
         public int Cedula { get; set; }
 
         [Display(Name = "Nombre")]
-        [MaxLength(50, ErrorMessage = "No se permiten más de 50 dcaracteres")]
-        [Required(ErrorMessage = "El campo {0} es obligaptorio")]
+        [MaxLength(50, ErrorMessage = "No se permiten más de 50 caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Nombre { get; set; }
 
         [Display(Name = "Afiliación")]
-        [MaxLength(50, ErrorMessage = "No se permiten más de 50 dcaracteres")]
-        [Required(ErrorMessage = "El campo {0} es obligaptorio")]
+        [MaxLength(50, ErrorMessage = "No se permiten más de 50 caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
 
         public string Afiliacion { get; set; }
 
         [Display(Name = "Especialidad")]
-        [MaxLength(100, ErrorMessage = "No se permiten más de 100 dcaracteres")]
-        [Required(ErrorMessage = "El campo {0} es obligaptorio")]
+        [MaxLength(100, ErrorMessage = "No se permiten más de 100 caracteres")]
+        [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string Especialidad { get; set; }
 
     }
